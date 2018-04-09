@@ -1,0 +1,46 @@
+{layout name="public/layout"}
+<h3 class="text-center text-success">用户列表</h3>
+<table class="table tb-default tb-hover">
+    <tr>
+        <th>ID</th>
+        <th>用户名</th>
+        <th>手机</th>
+        <th>邮箱</th>
+        <th>级别</th>
+        <th>状态</th>
+        <th>注册时间</th>
+        <th>操作</th>
+    </tr>
+    {voList name="userList" id="user" empty="$empty"}
+    <tr>
+        <td>{$user.id}</td>
+        <td>{$user.name}</td>
+        <td>{$user.mobile}</td>
+        <td>{$user.email}</td>
+        {eq name="$user.is_admin" value="1"}
+        <td class="text-warning">超级管理员</td>
+        {else}
+        <td class="text-warning">注册用户</td>
+        {/eq}
+        {eq name="$user.status" value="1"}
+        <td class="text-success">正常</td>
+        {else}
+        <td class="text-warning">异常</td>
+        {/eq}
+        <td>{$user.create_time}</td>
+        {eq name="$user.id" value="$Think.session.user_id"}
+        <td><a href="{:url('user/userEdit',['id'=>$user.id])}">编辑</a></td>
+        {/eq}
+        {neq name="$user.id" value="$Think.session.user_id"}
+        <td><a href="" onclick="dele();return false;">删除</a></td>
+        {/neq}
+    </tr>
+    {/voList}
+</table>
+<script>
+    function dele() {
+        if(true ==confirm('您确定要删除吗？')){
+            window.location.href = "{:url('user/doDelete',['id'=>$user.id])}"
+        }
+    }
+</script>

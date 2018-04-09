@@ -1,0 +1,43 @@
+{layout name="public/layout"}
+<h3 class="text-center text-success">文章管理</h3>
+<table class="table tb-default tb-hover">
+    <tr>
+        <th>ID</th>
+        <th>标题</th>
+        <th>栏目</th>
+        {eq name="$Think.session.is_admin" value="1"}
+        <th>作者</th>
+        {/eq}
+        <th>阅读量</th>
+        <th>创建时间</th>
+        <th colspan="2">操作</th>
+    </tr>
+    {voList name="artList" id="art" empty="$empty"}
+    <tr>
+        <td>{$art.id}</td>
+        <td>{$art.title}</td>
+        <td>{$art.cate_id|getCateName}</td>
+        {eq name="$Think.session.is_admin" value="1"}
+        <td>{$art.user_id|getUserName}</td>
+        {/eq}
+        <td>{$art.create_time}</td>
+        {eq name="$art.status" value="1"}
+        <td style="color: forestgreen">显示</td>
+        {else}
+        <td style="color: gray">隐藏</td>
+        {/eq}
+        <td><a href="{:url('article/artEdit',['id'=>$art.id])}">编辑</a></td>
+        <td><a href="javascript:;" onclick="dodelete({$art.id})">删除</a></td>
+    </tr>
+    {/voList}
+</table>
+<div class="text-center">
+    {$artList|raw}
+</div>
+<script>
+    function dodelete(id) {
+        if(true ==confirm('您确定删除吗?')){
+            window.location.href = "{:url('article/doDelete')}"+"?id="+id;
+        }
+    }
+</script>

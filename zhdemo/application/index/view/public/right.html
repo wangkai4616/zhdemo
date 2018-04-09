@@ -1,0 +1,16 @@
+<div class="col-md-4">
+    <div class="page-header">
+        <h2>栏目</h2>
+    </div>
+    <div class="list-group">
+        {voList name="hotArtList" id="art"}
+        <a href="#" class="list-group-item
+        {eq name="$i" value="1"}
+active
+        {/eq}
+">
+            {$art.title}<span class="badge">{$art.pv}</span>
+        </a>
+        {/voList}
+    </div>
+</div>

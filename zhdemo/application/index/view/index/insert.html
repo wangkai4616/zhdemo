@@ -1,0 +1,45 @@
+{extend name="public/base"}
+{block name="body"}
+<div class="row">
+    <div class="col-md-8">
+        <div class="page-header">
+            <h2>发布文章</h2>
+        </div>
+        <form  action="{:url('index/index/save')}" class="form-horizontal" id="article" method= "post" enctype="multipart/form-data" >
+            <input type="hidden" name="user_id" value="{$Think.session.user_id}">
+            <div class="form-group">
+                <label for="title" class=" control-label">标题</label>
+                    <input type="text" name="title" class="form-control"  id="title" placeholder="文章标题">
+            </div>
+            <div class="form-group">
+            <label for="title" class="control-label">分类</label>
+            <select name="cate_id" id="" class="form-control">
+                <!--voList为循环标签 name为所有数据 cate为单个循环变量，包含单个数据的所有信息-->
+                {voList name="cateList" id="cate"}
+                <option value="{$cate.id}">{$cate.name}</option>
+                {/voList}
+            </select>
+        </div>
+            <!--name与数据表字段名一致-->
+            <div class="form-group">
+                <label for="content" class="control-label">文章内容</label>
+                <textarea class="form-control" id="content" name="content" style="min-height: 250px;resize:none"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="title_img" class=" control-label">标题图片</label>
+                <input type="file" name="title_img" class="control"  id="title_img" placeholder="标题图片">
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" id="register">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        bkLib.onDomLoaded(function() {
+            new nicEditor({iconsPath : '/static/js/nicEditorIcons.gif'}).panelInstance('content');
+        });
+    </script>
+    {/block}

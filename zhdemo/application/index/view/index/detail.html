@@ -1,0 +1,108 @@
+{extend name="public/base" /}
+{block name="body" /}
+<div class="row">
+    <div class="col-md-8">
+        <div class="page-header">
+            <h1><small>{$art.cate_id|getCateName}</small></h1>
+        </div>
+        <div style="float: left;width:700px;margin-bottom: 25px ">
+            <img class="img-rounded" src="/uploads/{$art.title_img}" style="margin-right:30px;float:left; width: 200px;height:123px">
+            <div style="float: left">
+                <h4>{$art.title}</h4>
+                <!--使用模板函数对数据进行过滤和处理，处理机制为首位参数将值传递至函数，函数返回处理后的值-->
+                <p>发布者:{$art.user_id|getUserName}&nbsp;&nbsp;&nbsp;&nbsp;发布时间:{$art.create_time|date='Y-m-d'}</p>
+                <p>阅读量:{$art.pv}</p>
+                <div>{$art.content|getArtContent}</div>
+                <hr>
+                <button class="btn btn-primary" id="fav"
+                        user_id ="{$art.user_id}" article_id="{$art.id}"
+                        session_id="{$Think.session.user_id}"
+                >收藏</button>
+            </div>
+            <div class="col-md-8" style="margin-top: 50px;width: 700px">
+                <form method="post" id="comment">
+                    <input type="hidden" name="user_id" value="{$Think.session.user_id}">
+                    <input type="hidden" name="art_id" value="{$art.id}">
+                    <div class="form-group" style="width: 670px">
+                        <label for="content" class="control-label">发表评论</label>
+                        <textarea class="form-control" id="content" name="content" style="min-height: 50px"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="submit">提交评论</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="page-header" style="margin-top: 80px">
+                    <small>评论列表</small>
+                </div>
+                {voList name="commentList" id="com" emtpy="$empty"}
+                <div class="panel panel-default" style="margin-top: 10px;width: 670px;float: left">
+                    <div class="panel-heading">{$com.user_id|getUserName}&nbsp;&nbsp;&nbsp;<small>{$com.create_time}</small></div>
+                    <div class="panel-body">
+                        {$com.content}
+                    </div>
+                </div>
+                {/voList}
+            </div>
+            <script>
+                    $('#submit').on('click',function () {
+                        $.get("{:url('comment')}",$('#comment').serialize(),function (data) {
+                            if(data.status == 1){
+                                alert(data.message);
+                            }else{
+                                alert(data.message);
+                            }
+                        })
+                    })
+                    // bkLib.onDomLoaded(function() {
+                    //     new nicEditor({iconsPath : '/static/js/nicEditorIcons.gif'}).panelInstance('content');
+                    // });
+            </script>
+            <script>
+                $(function(){
+                    $('#fav').on('click',function () {
+                        var artId = $(this).attr('article_id');
+                        var userId = $(this).attr('user_id');
+                        var sessionId = $(this).attr('session_id');
+                        if(artId && userId){
+                            $.ajax(
+                            {
+                                type:"get",
+                                url:"{:url('index/fav')}",
+                                data:{
+                                    user_id:userId,
+                                    article_id:artId,
+                                    session_id:sessionId,
+                                    time:new Date().getTime()
+                                },
+                                dataType: 'json',
+                                success:function (data) {
+                                    switch (data.status)
+                                    {
+                                        case 1:
+                                            $('#fav').attr('class','btn btn-success');
+                                            $('#fav').text(data.message);
+                                            break;
+                                        case 0:
+                                            $('#fav').attr('class','btn btn-default');
+                                            $('#fav').text(data.message);
+                                            break;
+                                        case -1:
+                                            alert(data.message);
+                                            break;
+                                        case -2:
+                                            alert(data.message);
+                                            // window.location.href="{:url('index/user/login')}";
+                                            break;
+                                    }
+                                }
+                            })
+                        }
+                    })
+                });
+            </script>
+        </div>
+    </div>
+    {/block}
+
